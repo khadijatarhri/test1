@@ -1,0 +1,49 @@
+{% extends "base.html" %}  
+  
+{% block content %}  
+<div class="container mt-5">  
+    <h2>Sélectionner les entités à masquer</h2>  
+      
+    <form method="post" action="{% url 'csv_anonymizer:process' job_id %}">  
+        {% csrf_token %}  
+          
+        <div class="card mb-4">  
+            <div class="card-header">  
+                Entités détectées  
+            </div>  
+            <div class="card-body">  
+                <p>Sélectionnez les types d'informations personnelles à masquer:</p>  
+                  
+                {% for entity in detected_entities %}  
+                <div class="form-check">  
+                    <input class="form-check-input" type="checkbox" name="entities" value="{{ entity }}" id="entity_{{ forloop.counter }}">  
+                    <label class="form-check-label" for="entity_{{ forloop.counter }}">  
+                        {{ entity }}  
+                    </label>  
+                </div>  
+                {% endfor %}  
+            </div>  
+        </div>  
+          
+        <div class="card mb-4">  
+            <div class="card-header">  
+                Colonnes à traiter  
+            </div>  
+            <div class="card-body">  
+                <p>Sélectionnez les colonnes à analyser et anonymiser:</p>  
+                  
+                {% for header in headers %}  
+                <div class="form-check">  
+                    <input class="form-check-input" type="checkbox" name="headers" value="{{ header }}" id="header_{{ forloop.counter }}">  
+                    <label class="form-check-label" for="header_{{ forloop.counter }}">  
+                        {{ header }}  
+                    </label>  
+                </div>  
+                {% endfor %}  
+            </div>  
+        </div>  
+          
+        <button type="submit" class="btn btn-primary">Anonymiser et télécharger</button>  
+    </form>  
+</div>  
+{% endblock %}

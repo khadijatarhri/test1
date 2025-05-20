@@ -1,0 +1,21 @@
+  
+{% block content %}  
+<div class="container mt-5">  
+    <h2>Télécharger un fichier CSV pour anonymisation</h2>  
+      
+    {% if error %}  
+    <div class="alert alert-danger">  
+        {{ error }}  
+    </div>  
+    {% endif %}  
+      
+    <form method="post" enctype="multipart/form-data">  
+        {% csrf_token %}  
+        <div class="form-group">  
+            <label for="csv_file">Sélectionner un fichier CSV:</label>  
+            <input type="file" class="form-control-file" id="csv_file" name="csv_file" required>  
+        </div>  
+        <button type="submit" class="btn btn-primary mt-3">Télécharger</button>  
+    </form>  
+</div>  
+{% endblock %}

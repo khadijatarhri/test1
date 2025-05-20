@@ -5,6 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('mongo_auth/', include('mongo_auth.urls')),
+    path('csv-anonymizer/', include('csv_anonymizer.urls')),  
     path("admin/", admin.site.urls),
     path("", include("authapp.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

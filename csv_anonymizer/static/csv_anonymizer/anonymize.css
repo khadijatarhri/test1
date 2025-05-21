@@ -1,0 +1,113 @@
+/* Général */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* Conteneur principal */
+.anonymize-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* En-tête */
+.anonymize-header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.anonymize-header .subtitle {
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+/* Cartes */
+.selection-card,
+.info-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.card-header .icon {
+    font-size: 22px;
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.card-header h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.card-body p {
+    margin: 12px 0;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.card-description {
+    font-style: italic;
+    color: #666;
+}
+
+/* Grille des cases à cocher */
+.checkboxes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.styled-checkbox {
+    margin-right: 10px;
+    accent-color: #3498db;
+}
+
+/* Actions */
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.process-button {
+    background-color: #3498db;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.process-button i {
+    margin-right: 8px;
+}
+
+.process-button:hover {
+    background-color: #2980b9;
+}

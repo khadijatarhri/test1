@@ -83,9 +83,8 @@ class ProcessCSVView(View):
         if not request.session.get("user_email"):
             return redirect('login_form')
             
-        # Récupérer les entités sélectionnées
+        # Récupérer les entités sélectionnées (types de données à masquer)
         selected_entities = request.POST.getlist('entities')
-        selected_headers = request.POST.getlist('headers')
         
         # Récupérer les données de MongoDB
         job_data = collection.find_one({'job_id': str(job_id)})
@@ -98,34 +97,44 @@ class ProcessCSVView(View):
         # Convertir en DataFrame pandas
         df = pd.DataFrame(csv_data)
         
-        # Filtrer pour ne traiter que les colonnes sélectionnées
-        df_to_process = df[selected_headers]
-        
         # Initialiser les moteurs Presidio Structured
         pandas_engine = StructuredEngine()
         pandas_analysis_builder = PandasAnalysisBuilder()
         
-        # Générer l'analyse pour les colonnes sélectionnées
+        # Générer l'analyse pour TOUTES les colonnes
+        # Presidio va automatiquement identifier les colonnes contenant des données sensibles
         structured_analysis = pandas_analysis_builder.generate_analysis(
-            df_to_process,
+            df,
             language="en"
         )
         
-        # Définir les opérateurs d'anonymisation
+        # Filtrer l'analyse pour ne garder que les entités sélectionnées par l'utilisateur
+        filtered_analysis = {}
+        for column_name, column_analysis in structured_analysis.items():
+            filtered_column_analysis = []
+            for entity_analysis in column_analysis:
+                if entity_analysis.entity_type in selected_entities:
+                    filtered_column_analysis.append(entity_analysis)
+            if filtered_column_analysis:
+                filtered_analysis[column_name] = filtered_column_analysis
+        
+        # Définir les opérateurs d'anonymisation pour les entités sélectionnées
         operators = {entity: OperatorConfig("replace", {"new_value": "[MASQUÉ]"})
                     for entity in selected_entities}
         
-        # Anonymiser le DataFrame
-        anonymized_df = pandas_engine.anonymize(
-            data=df_to_process,
-            structured_analysis=structured_analysis,
-            operators=operators
-        )
-        
-        # Remplacer les colonnes originales par les colonnes anonymisées
-        for header in selected_headers:
-            if header in anonymized_df.columns:
-                df[header] = anonymized_df[header]
+        # Anonymiser uniquement les colonnes qui contiennent effectivement les entités sélectionnées
+        if filtered_analysis:
+            anonymized_df = pandas_engine.anonymize(
+                data=df,
+                structured_analysis=filtered_analysis,
+                operators=operators
+            )
+            
+            # Remplacer les valeurs originales par les valeurs anonymisées
+            # Uniquement pour les colonnes qui ont effectivement été anonymisées
+            for column in anonymized_df.columns:
+                if column in df.columns:
+                    df[column] = anonymized_df[column]
         
         # Mettre à jour le statut du job
         job = AnonymizationJob.objects.get(id=job_id)
@@ -135,6 +144,83 @@ class ProcessCSVView(View):
         # Préparer le fichier CSV à télécharger
         output = io.StringIO()
         df.to_csv(output, index=False)
+        
+        # Créer la réponse HTTP avec le fichier CSV
+        response = HttpResponse(output.getvalue(), content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="anonymized_{job.original_filename}"'
+        
+        # Nettoyer les données de MongoDB
+        collection.delete_one({'job_id': str(job_id)})
+        
+        return response
+    
+    
+    
+class ProcessCSVView(View):
+    def post(self, request, job_id):
+        # Vérifiez l'authentification
+        if not request.session.get("user_email"):
+            return redirect('login_form')
+            
+        # Récupérer les entités sélectionnées
+        selected_entities = request.POST.getlist('entities')
+        # Ces headers ne sont plus utilisés pour filtrer, mais juste pour avoir la liste complète
+        selected_headers = request.POST.getlist('headers') if 'headers' in request.POST else []
+        
+        # Récupérer les données de MongoDB
+        job_data = collection.find_one({'job_id': str(job_id)})
+        if not job_data:
+            return JsonResponse({'error': 'Données non trouvées'}, status=404)
+        
+        headers = job_data['headers']
+        csv_data = job_data['data']
+        
+        # Convertir en DataFrame pandas
+        df = pd.DataFrame(csv_data)
+        
+        # Initialiser les moteurs Presidio
+        analyzer = AnalyzerEngine()
+        anonymizer = AnonymizerEngine()
+        
+        # Créer une copie du DataFrame pour la sortie
+        output_df = df.copy()
+        
+        # Pour chaque colonne du DataFrame
+        for column in df.columns:
+            # Pour chaque ligne dans cette colonne
+            for index, value in df[column].items():
+                # Vérifier si la valeur est une chaîne avant de l'analyser
+                if isinstance(value, str):
+                    # Analyser pour détecter les entités
+                    results = analyzer.analyze(text=value, language='en')
+                    
+                    # Filtrer les résultats pour ne garder que les entités sélectionnées
+                    results = [r for r in results if r.entity_type in selected_entities]
+                    
+                    # Si des entités à anonymiser ont été trouvées
+                    if results:
+                        # Configurer l'anonymisation pour remplacer les valeurs
+                        anonymizers = {entity_type: OperatorConfig("replace", {"new_value": "[MASQUÉ]"})
+                                      for entity_type in selected_entities}
+                        
+                        # Anonymiser le texte
+                        anonymized_text = anonymizer.anonymize(
+                            text=value,
+                            analyzer_results=results,
+                            operators=anonymizers
+                        ).text
+                        
+                        # Remplacer la valeur dans le DataFrame de sortie
+                        output_df.at[index, column] = anonymized_text
+        
+        # Mettre à jour le statut du job
+        job = AnonymizationJob.objects.get(id=job_id)
+        job.status = 'completed'
+        job.save()
+        
+        # Préparer le fichier CSV à télécharger
+        output = io.StringIO()
+        output_df.to_csv(output, index=False)
         
         # Créer la réponse HTTP avec le fichier CSV
         response = HttpResponse(output.getvalue(), content_type='text/csv')

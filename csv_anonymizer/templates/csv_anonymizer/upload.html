@@ -1,21 +1,122 @@
-  
-{% block content %}  
-<div class="container mt-5">  
-    <h2>Télécharger un fichier CSV pour anonymisation</h2>  
-      
-    {% if error %}  
-    <div class="alert alert-danger">  
-        {{ error }}  
-    </div>  
-    {% endif %}  
-      
-    <form method="post" enctype="multipart/form-data">  
-        {% csrf_token %}  
-        <div class="form-group">  
-            <label for="csv_file">Sélectionner un fichier CSV:</label>  
-            <input type="file" class="form-control-file" id="csv_file" name="csv_file" required>  
-        </div>  
-        <button type="submit" class="btn btn-primary mt-3">Télécharger</button>  
-    </form>  
-</div>  
-{% endblock %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détection de Données Sensibles</title>
+    <link rel="stylesheet" href="{% static 'csv_anonymizer/style.css' %}">
+</head>
+<body>
+
+    <!-- Navigation responsive -->
+    {% include 'csv_anonymizer/navigationmenuBar.html' %}
+
+    <main>
+        <div class="upload-container">
+            <h1>Détection de Données Sensibles</h1>
+            
+            <div class="files-section">
+                <h2>Fichiers</h2>
+                <h3>Téléchargement des Fichiers</h3>
+                
+                <div class="upload-area">
+                    {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" class="upload-form">
+                        {% csrf_token %}
+                        <div class="dropzone" id="dropzone">
+                            <p>Glissez-déposez vos fichiers ici</p>
+                            <p>ou cliquez pour sélectionner des fichiers</p>
+                            <p class="formats">Formats supportés: PDF, DOC, DOCX, XLS, XLSX, CSV, TXT</p>
+                            
+                            <label for="csv_file" class="custom-file-upload">
+                                <input type="file" id="csv_file" name="csv_file" required>
+                            </label>
+                        </div>
+                        <div id="file-name" class="file-name"></div>
+                        <div class="buttons">
+                            <button type="button" class="cancel-button">Annuler</button>
+                            <button type="submit" class="analyze-button">Démarrer l'analyse</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Fonction pour afficher le menu de navigation
+        function toggleMenu() {
+            const menu = document.getElementById("nav-links");
+            menu.classList.toggle("active");
+        }
+        
+        // Attendre que le DOM soit complètement chargé
+        document.addEventListener("DOMContentLoaded", function() {
+            const fileInput = document.getElementById("csv_file");
+            const fileNameDisplay = document.getElementById("file-name");
+            const dropzone = document.getElementById("dropzone");
+            
+            // Gestion du drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropzone.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                dropzone.classList.remove('highlight');
+            }
+
+            dropzone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                handleFiles(files);
+            }
+
+            // Gestion de la sélection de fichier
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    handleFiles(this.files);
+                }
+            });
+
+            function handleFiles(files) {
+                fileNameDisplay.textContent = "Fichier sélectionné : " + files[0].name;
+                fileNameDisplay.style.display = "block";
+            }
+
+            // Bouton Annuler
+            document.querySelector('.cancel-button').addEventListener('click', function() {
+                fileInput.value = '';
+                fileNameDisplay.textContent = '';
+                fileNameDisplay.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

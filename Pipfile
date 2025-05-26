@@ -12,6 +12,7 @@ pyjwt = "==2.9.0"
 sqlparse = "==0.5.3"
 typing-extensions = "==4.13.2"
 pymongo = "*"
+django-tailwind = "*"
 
 [dev-packages]
 

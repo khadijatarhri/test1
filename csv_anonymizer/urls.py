@@ -5,5 +5,6 @@ app_name = 'csv_anonymizer'
   
 urlpatterns = [  
     path('upload/', UploadCSVView.as_view(), name='upload'),  
-    path('process/<int:job_id>/', ProcessCSVView.as_view(), name='process'),  
+    path('process/<str:job_id>/', ProcessCSVView.as_view(), name='process'),  
+
 ]

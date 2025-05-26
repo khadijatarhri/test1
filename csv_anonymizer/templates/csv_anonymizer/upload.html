@@ -2,121 +2,201 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Détection de Données Sensibles</title>
-    <link rel="stylesheet" href="{% static 'csv_anonymizer/style.css' %}">
-</head>
-<body>
-
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+  </head>
+  <body>
     <!-- Navigation responsive -->
     {% include 'csv_anonymizer/navigationmenuBar.html' %}
 
     <main>
-        <div class="upload-container">
-            <h1>Détection de Données Sensibles</h1>
-            
-            <div class="files-section">
-                <h2>Fichiers</h2>
-                <h3>Téléchargement des Fichiers</h3>
-                
-                <div class="upload-area">
-                    {% if error %}
-                    <div class="error-message">
-                        {{ error }}
-                    </div>
-                    {% endif %}
+      <div class="upload-container1">
+        <h1
+          style="
+            font-size: 24px;
+            font-weight: 1000;
+            color: black;
+            margin-left: 35rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+          "
+        >
+          Détection des données sensibles
+        </h1>
 
-                    <form method="post" enctype="multipart/form-data" class="upload-form">
-                        {% csrf_token %}
-                        <div class="dropzone" id="dropzone">
-                            <p>Glissez-déposez vos fichiers ici</p>
-                            <p>ou cliquez pour sélectionner des fichiers</p>
-                            <p class="formats">Formats supportés: PDF, DOC, DOCX, XLS, XLSX, CSV, TXT</p>
-                            
-                            <label for="csv_file" class="custom-file-upload">
-                                <input type="file" id="csv_file" name="csv_file" required>
-                            </label>
-                        </div>
-                        <div id="file-name" class="file-name"></div>
-                        <div class="buttons">
-                            <button type="button" class="cancel-button">Annuler</button>
-                            <button type="submit" class="analyze-button">Démarrer l'analyse</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="files-section">
+          <h3
+            style="
+              font-weight: 900;
+              color: black;
+              margin-left: 2rem;
+              margin-top: 2rem;
+              margin-bottom: 2rem;
+              margin-right: 0;
+            "
+          >
+            Téléchargement des Fichiers
+          </h3>
+          <div
+            style="margin-left: 2rem; margin-right: 2rem"
+            class="upload-area"
+          >
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+
+            <form
+              method="post"
+              enctype="multipart/form-data"
+              class="upload-form"
+            >
+              {% csrf_token %}
+              <div
+                id="dropzone"
+                class="flex items-center justify-center w-full"
+              >
+                <label
+                  for="csv_file"
+                  class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                >
+                  <div
+                    class="flex flex-col items-center justify-center pt-5 pb-6"
+                  >
+                    <svg
+                      class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <span class="font-semibold">Cliquez pour téléverser</span>
+                      ou glissez-déposez
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      Formats : CSV, TXT
+                    </p>
+                  </div>
+                  <input
+                    id="csv_file"
+                    name="csv_file"
+                    type="file"
+                    class="hidden"
+                    required
+                  />
+                </label>
+              </div>
+
+              <div id="file-name" class="file-name"></div>
+              <div
+                class="buttons"
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-top: 1.5rem;
+                  max-width: 2000px;
+                  width: 100%;
+                "
+              >
+                <button
+                  type="button"
+                  class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  Démarrer l'analyse
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </main>
 
-    <script>
-        // Fonction pour afficher le menu de navigation
-        function toggleMenu() {
-            const menu = document.getElementById("nav-links");
-            menu.classList.toggle("active");
-        }
-        
-        // Attendre que le DOM soit complètement chargé
-        document.addEventListener("DOMContentLoaded", function() {
-            const fileInput = document.getElementById("csv_file");
-            const fileNameDisplay = document.getElementById("file-name");
-            const dropzone = document.getElementById("dropzone");
-            
-            // Gestion du drag and drop
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, preventDefaults, false);
-            });
+    <script src="https://cdn.tailwindcss.com">
+      // Fonction pour afficher le menu de navigation
+      function toggleMenu() {
+        const menu = document.getElementById("nav-links");
+        menu.classList.toggle("active");
+      }
 
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+      // Attendre que le DOM soit complètement chargé
+      document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("csv_file");
+        const fileNameDisplay = document.getElementById("file-name");
+        const dropzone = document.getElementById("dropzone");
 
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropzone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight() {
-                dropzone.classList.add('highlight');
-            }
-
-            function unhighlight() {
-                dropzone.classList.remove('highlight');
-            }
-
-            dropzone.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                fileInput.files = files;
-                handleFiles(files);
-            }
-
-            // Gestion de la sélection de fichier
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files.length > 0) {
-                    handleFiles(this.files);
-                }
-            });
-
-            function handleFiles(files) {
-                fileNameDisplay.textContent = "Fichier sélectionné : " + files[0].name;
-                fileNameDisplay.style.display = "block";
-            }
-
-            // Bouton Annuler
-            document.querySelector('.cancel-button').addEventListener('click', function() {
-                fileInput.value = '';
-                fileNameDisplay.textContent = '';
-                fileNameDisplay.style.display = 'none';
-            });
+        // Gestion du drag and drop
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          dropzone.addEventListener(eventName, preventDefaults, false);
         });
+
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+          dropzone.classList.add("highlight");
+        }
+
+        function unhighlight() {
+          dropzone.classList.remove("highlight");
+        }
+
+        dropzone.addEventListener("drop", handleDrop, false);
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          fileInput.files = files;
+          handleFiles(files);
+        }
+
+        // Gestion de la sélection de fichier
+        fileInput.addEventListener("change", function () {
+          if (this.files && this.files.length > 0) {
+            handleFiles(this.files);
+          }
+        });
+
+        function handleFiles(files) {
+          fileNameDisplay.textContent =
+            "Fichier sélectionné : " + files[0].name;
+          fileNameDisplay.style.display = "block";
+        }
+
+        // Bouton Annuler
+        document
+          .querySelector(".cancel-button")
+          .addEventListener("click", function () {
+            fileInput.value = "";
+            fileNameDisplay.textContent = "";
+            fileNameDisplay.style.display = "none";
+          });
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -1,9 +1,8 @@
 body {
-    margin: 0;
+    margin: 2rem;
     font-family: 'Segoe UI', sans-serif;
-    background: #f5f7fa;
+    background: #fff;
     color: #333;
-    line-height: 1.6;
 }
 
 .navbar {
@@ -69,30 +68,35 @@ body {
     }
 }
 
-.upload-container {
-    max-width: 800px;
+.upload-container1 {
+    max-width: 900px;
+    /* ou la taille que tu veux */
     margin: 2rem auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* marge verticale 2rem, centrage horizontal auto */
+    padding: 1rem;
+    /* espace intérieur */
+    box-sizing: border-box;
+    /* pour que padding ne déborde pas */
 }
+
+
 
 .upload-container h1 {
     color: #2c3e50;
     font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    margin: 2rem 1rem;
+    /* 2rem en haut/bas (vertical), 1rem à droite/gauche (horizontal) */
     text-align: center;
 }
 
 .files-section {
-    margin-top: 2rem;
+    margin: 2rem;
 }
 
 .files-section h2 {
     color: #2c3e50;
     font-size: 1.4rem;
-    margin-bottom: 0.5rem;
+    margin: 2rem;
 }
 
 .files-section h3 {
@@ -100,16 +104,13 @@ body {
     font-size: 1.1rem;
     font-weight: normal;
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin: 2rem 1rem;
 }
 
+
 .upload-area {
-    border: 2px dashed #bdc3c7;
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
+    margin: 2rem;
+
 }
 
 .upload-area.highlight {
@@ -118,14 +119,14 @@ body {
 }
 
 .upload-area p {
-    margin: 0.5rem 0;
-    color: #7f8c8d;
+    margin: 2rem;
+    color: #fff;
 }
 
 .upload-area .formats {
     font-size: 0.9rem;
-    color: #95a5a6;
-    margin-bottom: 1.5rem;
+    color: #fff;
+    margin: 2rem;
 }
 
 .custom-file-upload {
@@ -157,14 +158,17 @@ body {
 
 .buttons {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: 1rem;
     margin-top: 1.5rem;
+    max-width: 400px; /* tu peux ajuster cette largeur */
+    width: 100%;
 }
+
 
 .analyze-button {
     padding: 0.8rem 2rem;
-    background-color: #2ecc71;
+    background-color: #555555;
     color: white;
     border: none;
     border-radius: 6px;
@@ -174,13 +178,13 @@ body {
 }
 
 .analyze-button:hover {
-    background-color: #27ae60;
+    background-color: #444444;
 }
 
 .cancel-button {
     padding: 0.8rem 2rem;
-    background-color: #e74c3c;
-    color: white;
+    background-color: #cccccc;
+    color: #333333;
     border: none;
     border-radius: 6px;
     font-weight: 600;

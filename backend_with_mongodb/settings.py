@@ -40,9 +40,17 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "authapp",
+    "tailwind",
     "csv_anonymizer",
     "mongo_auth",
+    "theme",
+    
 ]
+
+TAILWIND_APP_NAME = 'theme'
+
+
+
 
 MANGO_JWT_SETTINGS = {
     "db_host": "localhost",
@@ -51,6 +59,8 @@ MANGO_JWT_SETTINGS = {
 }
 
 
+# settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 
 MIDDLEWARE = [
@@ -101,18 +111,25 @@ MONGODB_SETTINGS = {
     'host': 'mongodb://localhost:27017/',  
     'db': 'csv_anonymizer_db',  
 }
+
+# Dans settings.py  
+DATABASES = {  
+    'default': {  
+        'ENGINE': 'django.db.backends.sqlite3',  
+        'NAME': BASE_DIR / "db.sqlite3",  
+    }  
+}
 #DATABASES = {
 #    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / "db.sqlite3",
-#    }
+#        'ENGINE': 'djongo',
+#        'NAME': 'PFADB',
+#        'ENFORCE_SCHEMA': False,
+#        'CLIENT': {
+ #           'host': 'mongodb://localhost:27017',
+  #      }
+   # 
+    #}
 #}
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'PFADB',
-    }
-}
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'home'

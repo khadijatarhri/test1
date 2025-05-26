@@ -72,13 +72,13 @@ def home_view(request):
 
 
 # --- Upload API ---
-class UploadFileView(APIView):
-    def post(self, request):
-        if not request.session.get("user_email"):
-            return Response({"error": "Utilisateur non connecté"}, status=401)
-
-        file = request.FILES.get("file")
-        if file:
+class UploadFileView(APIView):  
+    def post(self, request):  
+        if not request.session.get("user_email"):  
+            return Response({"error": "User not authenticated"}, status=401)  
+              
+        file = request.FILES.get("file")  
+        if file:  
             save_path = f"media/uploads/{file.name}"
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             with open(save_path, 'wb+') as destination:
